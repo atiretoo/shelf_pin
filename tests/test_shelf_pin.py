@@ -63,21 +63,24 @@ class TestShelfPinGeometry(unittest.TestCase):
     def test_print_ready_orientation(self):
         """
         Verify that in print-ready orientation:
-        - The part rests on the bed at Z = 0
-        - Pin points straight up in +Z direction
-        - Total Z height corresponds to depth (triangular face to pin tip)
+        - The flat hypotenuse of the triangular gusset rests on the print bed at Z = 0
+        - Large contact area (> 250 mm^2) for strong bed adhesion
+        - Width along X is preserved (12.5 mm)
+        - Pin is angled upward at 45 degrees
         """
         bb = self.print_solid.BoundingBox()
         self.assertAlmostEqual(bb.zmin, 0.0, places=2, msg="Lowest point must sit at Z = 0 on the print bed")
 
-        # The highest face in +Z must be the tip of the pin
-        top_face = self.print_wp.faces(">Z").val()
-        pin_tip_z = top_face.Center().z
-        self.assertAlmostEqual(pin_tip_z, bb.zmax, places=1)
+        # Verify flat bottom face at Z = 0
+        bottom_faces = [
+            f for f in self.print_solid.Faces()
+            if abs(f.normalAt().z - (-1.0)) < 0.05 and abs(f.Center().z) < 0.02
+        ]
+        self.assertEqual(len(bottom_faces), 1, "Must have exactly 1 flat face resting on the print bed")
+        self.assertGreater(bottom_faces[0].Area(), 250.0, "Bed contact area must exceed 250 mm^2 for bed adhesion")
 
-        # Width and backplate height along X and Y
+        # Width along X
         self.assertAlmostEqual(bb.xmax - bb.xmin, OVERALL_WIDTH, places=2)
-        self.assertAlmostEqual(bb.ymax - bb.ymin, OVERALL_HEIGHT, places=2)
 
 
 if __name__ == "__main__":

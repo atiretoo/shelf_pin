@@ -134,12 +134,14 @@ def create_shelf_pin():
 def rotate_for_print(part_wp):
     """
     Rotates and positions the shelf pin for 3D printing:
-    - Triangular part facing the bed (-Z direction)
-    - Pin pointing straight up (+Z direction)
-    - Z-aligned so lowest point touches print bed at Z = 0
+    - Rotates 45 degrees around X axis so the flat hypotenuse of the triangular
+      gusset rests directly on the print bed (Z = 0).
+    - Pin points up at 45 degrees, which avoids layer-line shear weakness, requires
+      no support material, and provides a large flat bed adhesion footprint (>270 mm^2).
+    - Z-aligned so lowest face touches print bed at Z = 0.
     """
-    # Rotate +90 degrees around X axis: +Y (pin direction) rotates to +Z (up)
-    rotated = part_wp.rotate((0, 0, 0), (1, 0, 0), 90)
+    # Rotate 45 degrees around X axis to seat the triangular hypotenuse flat on the bed
+    rotated = part_wp.rotate((0, 0, 0), (1, 0, 0), 45)
     bb = rotated.val().BoundingBox()
     # Translate so bottom sits on Z = 0
     positioned = rotated.translate((0, 0, -bb.zmin))

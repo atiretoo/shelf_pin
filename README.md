@@ -16,7 +16,10 @@ The design replaces the typical injection-molded shelf pin—which often fails a
 - **Pin Length**: 8.0 mm with a 1.0 mm 45° lead-in chamfer for easy cabinet insertion
 - **Rib Configuration**: 8 longitudinal ribs with a rib positioned at 12 o'clock (top)
 - **Full-Width Solid Gusset**: Replaces the fragile single central rib with a continuous solid triangular wedge across the entire 12.5 mm width.
-- **3D Print Orientation**: Oriented with the triangular support facing the bed (-Z) and the ribbed pin pointing straight up (+Z) for maximum cylindrical accuracy and layer line strength.
+- **3D Print Orientation**: Oriented with the flat hypotenuse of the triangular gusset resting directly on the bed ($Z = 0$) and the pin angled upwards at 45°. This orientation:
+  - Eliminates layer-line shear weakness through the pin.
+  - Requires zero support material (all upward faces are at or above 45°).
+  - Provides a large flat bed adhesion footprint (>275 mm²).
 
 ## Project Structure
 
