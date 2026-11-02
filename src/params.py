@@ -23,7 +23,7 @@ SHELF_THICKNESS = 1.9   # Thickness of shelf horizontal ledge (mm)
 PIN_OUTER_DIAMETER = 6.25  # Outside diameter across ribs (mm)
 PIN_INNER_DIAMETER = 5.0   # Inside/root diameter of pin core (mm)
 PIN_LENGTH = 8.0           # Length of pin protruding from backplate (mm)
-PIN_CHAMFER = 0.8          # Lead-in chamfer at tip of pin (mm)
+PIN_CHAMFER = 1.0          # Lead-in chamfer at tip of pin (mm)
 PIN_NUM_RIBS = 8           # Number of longitudinal ribs (splines)
 PIN_RIB_WIDTH = 0.9        # Circumferential width of each rib (mm)
 
