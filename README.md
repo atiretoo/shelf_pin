@@ -11,7 +11,7 @@ The design replaces the typical injection-molded shelf pin—which often fails a
 - **Backplate Thickness**: 1.9 mm
 - **Shelf Projection**: 15.7 mm (measured from front face of backplate)
 - **Shelf Thickness**: 1.9 mm (top of shelf sits 1.9 mm above topmost rib)
-- **Pin Outer Diameter**: 6.25 mm (across longitudinal ribs/splines)
+- **Pin Outer Diameter**: 6.35 mm (exactly 1/4" across longitudinal ribs/splines for snug press-fit in deburred holes)
 - **Pin Inner Diameter**: 5.0 mm (root diameter of pin core)
 - **Pin Length**: 8.0 mm with a 1.0 mm 45° lead-in chamfer for easy cabinet insertion
 - **Rib Configuration**: 8 longitudinal ribs with a rib positioned at 12 o'clock (top)

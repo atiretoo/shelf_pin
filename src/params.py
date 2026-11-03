@@ -20,7 +20,7 @@ SHELF_PROJECTION = 15.7  # Shelf projection from front face of backplate (mm)
 SHELF_THICKNESS = 1.9   # Thickness of shelf horizontal ledge (mm)
 
 # Pin dimensions
-PIN_OUTER_DIAMETER = 6.25  # Outside diameter across ribs (mm)
+PIN_OUTER_DIAMETER = 6.35  # Outside diameter across ribs (mm) - exactly 1/4"
 PIN_INNER_DIAMETER = 5.0   # Inside/root diameter of pin core (mm)
 PIN_LENGTH = 8.0           # Length of pin protruding from backplate (mm)
 PIN_CHAMFER = 1.0          # Lead-in chamfer at tip of pin (mm)
