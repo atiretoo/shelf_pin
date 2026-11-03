@@ -116,7 +116,9 @@ def create_shelf_pin():
         .extrude(PIN_LENGTH)
     )
 
-    # 4. Add 45-degree lead-in chamfer to the pin tip using an explicit revolve cutter
+    # 4. Add true 45-degree lead-in chamfer to the pin tip using an explicit revolve cutter
+    # Slopes at exact 45 degrees (delta_r == delta_y == ch) from (r_out, PIN_LENGTH - ch)
+    # to (r_out - ch, PIN_LENGTH), ensuring the top chamfer surface aligns parallel to the print bed.
     r_out = PIN_OUTER_DIAMETER / 2.0
     ch = PIN_CHAMFER
     chamfer_cutter = (
@@ -125,6 +127,7 @@ def create_shelf_pin():
             (r_out - ch, PIN_LENGTH),
             (r_out + 2.0, PIN_LENGTH),
             (r_out + 2.0, PIN_LENGTH - ch),
+            (r_out, PIN_LENGTH - ch),
         ])
         .close()
         .revolve(360, (0, 0, 0), (0, 1, 0))
