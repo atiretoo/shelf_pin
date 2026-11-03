@@ -27,18 +27,21 @@ from src.params import (
 def _generate_rib_profile_points():
     """
     Generate 2D coordinates for the ribbed pin cross-section.
-    Starts at +90 degrees (12 o'clock / +Z in functional orientation) so that a rib
-    is positioned directly at the top of the pin, matching the design requirement.
+    The rib pattern is rotated by half a pitch (pi / n = 22.5 deg) so that the
+    topmost point (+Z in functional orientation / highest point in print orientation)
+    falls in the smooth valley between ribs. This prevents heat buildup and blob
+    defects on a single rib apex during 3D printing.
     """
     r_in = PIN_INNER_DIAMETER / 2.0
     r_out = PIN_OUTER_DIAMETER / 2.0
     w2 = PIN_RIB_WIDTH / 2.0
     n = PIN_NUM_RIBS
+    half_pitch = math.pi / n
 
     full_pts = []
     for i in range(n):
-        # 12 o'clock start is pi / 2
-        theta = i * 2.0 * math.pi / n + math.pi / 2.0
+        # Shift starting angle by half_pitch so top apex (pi/2) falls between ribs
+        theta = i * 2.0 * math.pi / n + math.pi / 2.0 + half_pitch
         d_theta_in = math.asin(min(w2 / r_in, 0.99))
         d_theta_out = math.asin(min(w2 / r_out, 0.99))
 
@@ -52,7 +55,7 @@ def _generate_rib_profile_points():
         full_pts.append((r_in * math.cos(theta + d_theta_in), r_in * math.sin(theta + d_theta_in)))
 
         # Intermediate root circle point between ribs for curvature stability
-        theta_mid = (i + 0.5) * 2.0 * math.pi / n + math.pi / 2.0
+        theta_mid = (i + 0.5) * 2.0 * math.pi / n + math.pi / 2.0 + half_pitch
         full_pts.append((r_in * math.cos(theta_mid), r_in * math.sin(theta_mid)))
 
     return full_pts

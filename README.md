@@ -14,7 +14,7 @@ The design replaces the typical injection-molded shelf pin—which often fails a
 - **Pin Outer Diameter**: 6.35 mm (exactly 1/4" across longitudinal ribs/splines for snug press-fit in deburred holes)
 - **Pin Inner Diameter**: 5.0 mm (root diameter of pin core)
 - **Pin Length**: 8.0 mm with a 1.0 mm 45° lead-in chamfer for easy cabinet insertion
-- **Rib Configuration**: 8 longitudinal ribs with a rib positioned at 12 o'clock (top)
+- **Rib Configuration**: 8 longitudinal ribs clocked by 22.5° so the topmost point falls between ribs, preventing heat buildup and nozzle blob defects during 3D printing.
 - **Full-Width Solid Gusset**: Replaces the fragile single central rib with a continuous solid triangular wedge across the entire 12.5 mm width.
 - **3D Print Orientation**: Oriented with the flat hypotenuse of the triangular gusset resting directly on the bed ($Z = 0$) and the pin angled upwards at 45°. This orientation:
   - Eliminates layer-line shear weakness through the pin.
