@@ -60,6 +60,27 @@ class TestShelfPinGeometry(unittest.TestCase):
         offset = shelf_top_z - top_rib_z
         self.assertAlmostEqual(offset, SHELF_THICKNESS, places=2, msg="Shelf top must be 1.9 mm above topmost rib")
 
+    def test_pin_rib_dimensions(self):
+        """
+        Verify that the pin rib flat faces are placed at perpendicular distance
+        PIN_OUTER_DIAMETER / 2 (3.175 mm), so that opposing flat faces measure
+        exactly PIN_OUTER_DIAMETER (6.35 mm / 1/4 inch) across flats.
+        """
+        import math
+        rib_crest_faces = []
+        for f in self.solid.Faces():
+            c = f.Center()
+            n = f.normalAt()
+            if 2.0 < c.y < PIN_LENGTH - 2.0 and abs(n.y) < 1e-3:
+                dist = math.hypot(c.x, c.z)
+                if dist > 3.0:  # Outer crest flat faces
+                    rib_crest_faces.append((c, n, dist))
+
+        self.assertEqual(len(rib_crest_faces), 8, "Must have exactly 8 outer rib crest planar faces")
+        for c, n, dist in rib_crest_faces:
+            self.assertAlmostEqual(dist, PIN_OUTER_DIAMETER / 2.0, places=3,
+                                   msg="Rib crest perpendicular distance must be PIN_OUTER_DIAMETER / 2 (3.175 mm)")
+
     def test_print_ready_orientation(self):
         """
         Verify that in print-ready orientation:

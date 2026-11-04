@@ -31,28 +31,36 @@ def _generate_rib_profile_points():
     topmost point (+Z in functional orientation / highest point in print orientation)
     falls in the smooth valley between ribs. This prevents heat buildup and blob
     defects on a single rib apex during 3D printing.
+
+    Rib crests are generated with flat faces whose perpendicular distance to center
+    is exactly PIN_OUTER_DIAMETER / 2 (3.175 mm), ensuring the across-flats dimension
+    measured by calipers and slicers is exactly PIN_OUTER_DIAMETER (6.35 mm / 1/4 inch).
     """
     r_in = PIN_INNER_DIAMETER / 2.0
-    r_out = PIN_OUTER_DIAMETER / 2.0
+    r_target = PIN_OUTER_DIAMETER / 2.0
     w2 = PIN_RIB_WIDTH / 2.0
     n = PIN_NUM_RIBS
     half_pitch = math.pi / n
+    y_root = math.sqrt(r_in**2 - w2**2)
 
     full_pts = []
     for i in range(n):
         # Shift starting angle by half_pitch so top apex (pi/2) falls between ribs
         theta = i * 2.0 * math.pi / n + math.pi / 2.0 + half_pitch
-        d_theta_in = math.asin(min(w2 / r_in, 0.99))
-        d_theta_out = math.asin(min(w2 / r_out, 0.99))
+        cos_t = math.cos(theta)
+        sin_t = math.sin(theta)
 
-        # Root before rib
-        full_pts.append((r_in * math.cos(theta - d_theta_in), r_in * math.sin(theta - d_theta_in)))
-        # Crest left
-        full_pts.append((r_out * math.cos(theta - d_theta_out), r_out * math.sin(theta - d_theta_out)))
-        # Crest right
-        full_pts.append((r_out * math.cos(theta + d_theta_out), r_out * math.sin(theta + d_theta_out)))
-        # Root after rib
-        full_pts.append((r_in * math.cos(theta + d_theta_in), r_in * math.sin(theta + d_theta_in)))
+        # Local rib coordinates: u (tangential, -w2 to +w2), v (radial along theta)
+        local_pts = [
+            (-w2, y_root),
+            (-w2, r_target),
+            (+w2, r_target),
+            (+w2, y_root),
+        ]
+        for u, v in local_pts:
+            gx = v * cos_t - u * sin_t
+            gy = v * sin_t + u * cos_t
+            full_pts.append((gx, gy))
 
         # Intermediate root circle point between ribs for curvature stability
         theta_mid = (i + 0.5) * 2.0 * math.pi / n + math.pi / 2.0 + half_pitch
@@ -117,17 +125,22 @@ def create_shelf_pin():
     )
 
     # 4. Add true 45-degree lead-in chamfer to the pin tip using an explicit revolve cutter
-    # Slopes at exact 45 degrees (delta_r == delta_y == ch) from (r_out, PIN_LENGTH - ch)
-    # to (r_out - ch, PIN_LENGTH), ensuring the top chamfer surface aligns parallel to the print bed.
-    r_out = PIN_OUTER_DIAMETER / 2.0
+    # The conical cutter slopes at exact 45 degrees (delta_r == delta_y) covering out
+    # to the rib corners, ensuring the top chamfer surface aligns parallel to the print bed.
+    r_target = PIN_OUTER_DIAMETER / 2.0
+    w2 = PIN_RIB_WIDTH / 2.0
+    r_corner = math.hypot(r_target, w2)
     ch = PIN_CHAMFER
+    delta_corner = r_corner - r_target
+    y_start = PIN_LENGTH - ch - delta_corner
+
     chamfer_cutter = (
         cq.Workplane("XY")
         .polyline([
-            (r_out - ch, PIN_LENGTH),
-            (r_out + 2.0, PIN_LENGTH),
-            (r_out + 2.0, PIN_LENGTH - ch),
-            (r_out, PIN_LENGTH - ch),
+            (r_target - ch, PIN_LENGTH),
+            (r_corner + 2.0, PIN_LENGTH),
+            (r_corner + 2.0, y_start),
+            (r_corner, y_start),
         ])
         .close()
         .revolve(360, (0, 0, 0), (0, 1, 0))
